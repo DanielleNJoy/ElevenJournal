@@ -27,7 +27,7 @@ function userSignUp() {
                 console.log(data);
                 let token = data.sessionToken;
                 localStorage.setItem('SessionToken', token);
-                tokenChecker();
+                protectedViews();
             })
             .catch(err => {
                 console.error(err)
@@ -61,7 +61,7 @@ function userSignUp() {
                 console.log(data);
                 let token = data.sessionToken;
                 localStorage.setItem('SessionToken', token);
-                tokenChecker();
+                protectedViews();
             })
             .catch(err => {
                 console.error(err)
@@ -76,32 +76,69 @@ function userSignUp() {
     //  console.log('userLogout Function Called')
         localStorage.setItem('SessionToken', undefined);
         console.log(`sessionToken --> ${localStorage.SessionToken}`);
-        tokenChecker();
+        protectedViews();
     }
     
     
     /* *************************
      *** TOKEN CHECKER FUNCTION ***
     ************************** */
-    function tokenChecker() {
-     console.log('tokenChecker Function Called')
+    // function protectedViews() {
+    //  console.log('protectedViews Function Called')
 
-    let display = document.getElementById('journals');
-    let header = document.createElement('h5');
-    let accessToken = localStorage.getItem('SessionToken');
-    let alertText = 'Log in or sign up to get started!';
+    // let display = document.getElementById('journals');
+    // let header = document.createElement('h5');
+    // let accessToken = localStorage.getItem('SessionToken');
+    // let alertText = 'Log in or sign up to get started!';
 
-    for (let i = 0; i < display.childNodes.length; i++){
-        display.removeChild(display.firstChild);
-    }
+    // for (let i = 0; i < display.childNodes.length; i++){
+    //     display.removeChild(display.firstChild);
+    // }
 
-    if(accessToken === 'undefined'){
-        display.appendChild(header);
-        header.textContent = alertText;
-        header.setAttribute('id', 'defaultLogin');
-    } else {
-        null
-    }
-    }
-    tokenChecker();
+    // if(accessToken === 'undefined'){
+    //     display.appendChild(header);
+    //     header.textContent = alertText;
+    //     header.setAttribute('id', 'defaultLogin');
+    // } else {
+    //     null
+    // }
+    // }
+    // protectedViews();
     
+
+    function protectedViews(){
+        const journalPost = document.getElementById('journalEntry');
+        const journalView = document.getElementById('journalView');
+    
+        let token = localStorage.getItem('SessionToken');
+        console.log(token);
+    
+        if(token === 'undefined') {
+            journalPost.style.display = 'none';
+            journalView.style.display = 'none';
+    
+            let loginMessage = document.getElementById('login-message');
+    
+            let message = document.createElement('h1');
+            message.setAttribute('id', 'message');
+            message.innerText = 'Please login or signup to continue';
+            message.style.cssText = `
+                position: absolute;
+                text-align: center;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            `;
+    
+            loginMessage.appendChild(message);
+        } else {
+            let loginMessage = document.getElementById('login-message');
+            let message = document.getElementById('message');
+            loginMessage.removeChild(message);
+    
+            journalPost.style.display = 'block';
+            journalView.style.display = 'block';
+        }
+    }
+    
+    protectedViews();
